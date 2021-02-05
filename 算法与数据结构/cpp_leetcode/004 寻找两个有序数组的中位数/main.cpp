@@ -1,4 +1,4 @@
-#include "../utils.hpp"
+#include "utils.hpp"
 
 using namespace std;
 
@@ -59,7 +59,7 @@ public:
         int l = 0, r = n1-1;
         int k = (n1+n2+1)/2;
         while (l<=r) {
-            int m1 = l + (r-l)/2;   // [0, m1-1] + [m1, ...]
+            int m1 = (l+r+1)/2;   // [0, m1-1] + [m1, ...]
             int m2 = k - m1;        // [0, m2-1] + [m2, ...]
             if (nums1[m1] < nums2[m2-1]) {  // 增加来自 nums1 的个数
                 l = m1 + 1;
@@ -83,9 +83,8 @@ int main(int argc, char *argv[])
 {
 	vector<int> nums1{ 2,3, 5 };
 	vector<int> nums2{ 1,4,7, 9 };
-	
-	Solution solution;
-	double ret = solution.findMedianSortedArrays(nums1, nums2);
+
+	double ret = Solution2().findMedianSortedArrays(nums1, nums2);
     cout<<ret<<endl;
 	return 0;
 }

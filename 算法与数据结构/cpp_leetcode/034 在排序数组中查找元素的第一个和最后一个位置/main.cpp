@@ -26,6 +26,7 @@ public:
         return {left, right};
     }
 
+    // 找左边界
     int findLeft(vector<int>& nums, int target) {
         int l = 0, r = nums.size()-1;
         while (l<=r) {
@@ -34,10 +35,11 @@ public:
             else if (nums[mid] < target) l = mid+1;
             else r = mid -1;
         }
-        if (l < nums.size() && nums[l]==target) return l;
+        if (l < nums.size() && nums[l]==target) return l; // 如果 l 未越上界， nums[l]==target 返回 l
         return -1;
     }
 
+    // 找右边界
     int findRight(vector<int>& nums, int target) {
         int l = 0, r = nums.size()-1;
         while (l<=r) {
@@ -46,7 +48,7 @@ public:
             else if (nums[mid] < target) l = mid+1;
             else r = mid -1;
         }
-        if (r >=0 && nums[r]==target) return r;
+        if (r >=0 && nums[r]==target) return r;  // r 有可能越下界，判断 r 返回 r
         return -1;
     }
 };

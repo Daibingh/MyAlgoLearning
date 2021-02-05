@@ -33,13 +33,15 @@ void preOrderTraversal2(TreeNode* root) {
     TreeNode* cur = root;
     while (cur || !S.empty())  // 注意是或的关系
     {
-        while (cur) {   // 一路向左走到底，访问节点并入栈
+        if (cur) {   // 一路向左走到底，访问节点并入栈
             cout<<cur->val<<endl;  // 先序遍历，第一次遇到就访问
             S.push(cur);
             cur = cur->left;  // 更新当前节点
         }
-        cur = S.top()->right;  // 左边走到底了，如果栈非空，父亲节点退栈，再跳到它的右儿子节点
-        S.pop();                  
+        else {
+            cur = S.top()->right;  // 左边走到底了，如果栈非空，父亲节点退栈，再跳到它的右儿子节点
+            S.pop();
+        }                  
     }
 }
 
@@ -50,15 +52,46 @@ void inOrderTraversal2(TreeNode* root) {
     TreeNode* cur = root;
     while (cur || !S.empty())  // 注意是或的关系
     {
-        while (cur) {   // 一路向左走到底，访问节点并入栈
+        if (cur) {   // 一路向左走到底，访问节点并入栈
             S.push(cur);
             cur = cur->left;  // 更新当前节点
         }
-        cout<<S.top()->val<<endl;  // 左边走到底了，如果栈非空，父亲节点退栈，再跳到它的右儿子节点
-        cur = S.top()->right;
-        S.pop();
+        else {
+            cout<<S.top()->val<<endl;  // 左边走到底了，如果栈非空，父亲节点退栈，再跳到它的右儿子节点
+            cur = S.top()->right;
+            S.pop();
+        }
     }
 }
+
+
+// 非递归后序遍历
+class Solution {
+public:
+    vector<int> postorderTraversal(TreeNode* root) {
+        stack<TreeNode*> stk;
+        unordered_map<TreeNode*, int> meet;  // 记录遇见的次数
+        vector<int> res;
+        while (root || !stk.empty()) {
+            if (root && meet[root]==0) {
+                stk.push(root);
+                ++meet[root];
+                root = root->left;
+            }
+            else {
+                auto t = stk.top();
+                if (++meet[t]==3) {  // 第三次遇见，做访问，并出栈
+                    res.push_back(t->val);
+                    stk.pop();
+                }
+                else {   // 否则是第二次，不出栈，继续向右
+                    root = t->right;
+                }
+            }
+        }
+        return res;
+    }
+};
 
 
 // 层次遍历

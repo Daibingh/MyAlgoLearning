@@ -37,3 +37,43 @@ public:
         return res;
     }
 };
+
+
+// 动态规划，记录每个点为底边的矩形的左右边界和高度
+class Solution2 {
+public:
+    int maximalRectangle(vector<vector<char>>& matrix) {
+        if (matrix.empty()) return 0;
+        int m = matrix.size();
+        int n = matrix[0].size();
+        vector<int> L(n), R(n, n), H(n);
+        int res = 0;
+        for (int i=0;i<m;++i) {
+            int curL = 0, curR = n-1;  // 记录当前行当前列连续 “1” 的左，右边界
+            for (int j=0;j<n;++j) {
+                if (matrix[i][j]=='1') {
+                    ++H[j];
+                    L[j] = max(L[j], curL);
+                }
+                else {
+                    H[j] = 0;
+                    L[j] = 0;
+                    curL = j+1;
+                }
+                if (matrix[i][n-j-1]=='1') {
+                    R[n-j-1] = min(R[n-j-1], curR);
+                }
+                else {
+                    R[n-j-1] = n;
+                    curR = n-j-2;
+                }
+            }
+
+            for (int j=0;j<n;++j) {
+                res = max(res,  H[j] * ( R[j] - L[j] + 1) );
+            }
+
+        }
+        return res;
+    }
+};

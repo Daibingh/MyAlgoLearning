@@ -84,4 +84,48 @@ void backtrack(vector<int>& nums, int start, vector<int>& track) {
 //                     []
 //         1           2           3
 //     2       3       3   
-// 3           2       
+// 3                
+
+
+// 迭代的方法
+class Solution3 {
+public:
+    vector<vector<int>> subsets(vector<int>& nums) {
+        vector<vector<int>> res;  // 最后的结果集
+        vector<vector<int>> tmp;  // 上一层结果集（长度为 i）
+        res.push_back( vector<int>() );
+        tmp.push_back( vector<int>() );
+        for (int i=0;i<nums.size(); ++i) {
+            vector<vector<int>> tmp_new;  // 下一层结果集，（长度为 i+1）
+            for (const auto & v : tmp) {
+                for (const auto & t : nums) {
+                    if ( v.empty() || t > v.back() ) {  // 添加新元素，要求比最后一个元素大
+                        vector<int> item = v;
+                        item.push_back(t);
+                        tmp_new.push_back(item);
+                        res.push_back(item);
+                    }
+                }
+            }
+            tmp = tmp_new;  // 更新上一层结果集
+        }
+        return res;
+    }
+};
+
+// 动态规划的思想，根据前n个数的子集，退出n+1个数的子集
+class Solution4 {
+public:
+    vector<vector<int>> subsets(vector<int>& nums) {
+        vector<vector<int>> res{{}};
+        for (const auto & n : nums) {
+            int size = res.size();
+            for (int i=0; i<size; ++i) {
+                auto t = res[i];
+                t.push_back(n);
+                res.push_back(t);
+            }
+        }
+        return res;
+    }
+};
