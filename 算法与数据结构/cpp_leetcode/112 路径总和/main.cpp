@@ -19,14 +19,14 @@ using namespace std;
 返回 true, 因为存在目标和为 22 的根节点到叶子节点的路径 5->4->11->2。
 */
 
-
 class Solution {
-public:
+   public:
     bool hasPathSum(TreeNode* root, int sum) {
-        if (!root) return false;
-        sum -= root->val; 
-        if (!root->left && !root->right ) return sum==0;  // 需要提前一步判断
-       return hasPathSum(root->left, sum) || hasPathSum(root->right, sum);
+        if (!root)
+            return false;
+        sum -= root->val;
+        if (!root->left && !root->right)
+            return sum == 0;  // 需要提前一步判断
+        return hasPathSum(root->left, sum) || hasPathSum(root->right, sum);
     }
-
 };

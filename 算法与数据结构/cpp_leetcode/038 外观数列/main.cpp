@@ -34,3 +34,7 @@ public:
         return str;
     }
 };
+
+int main() {
+    
+}

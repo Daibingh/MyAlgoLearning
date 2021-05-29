@@ -43,3 +43,34 @@ public:
         return dummy->next;
     }
 };
+
+
+// 快排
+class Solution {
+public:
+    ListNode* sortList(ListNode* head) {
+        quick_sort(head, nullptr);
+        return head;
+    }
+
+    void quick_sort(ListNode* s, ListNode* t) {
+        if (s==t || s->next==t) return ;
+        ListNode* p = partition(s, t);
+        quick_sort(s, p);
+        quick_sort(p->next, t);
+    }
+
+    ListNode* partition(ListNode* s, ListNode* t) {
+        int pivot = s->val;
+        ListNode* cur = s->next;
+        ListNode* p = s;
+        for (; cur!=t;cur=cur->next) {
+            if (cur->val < pivot) {
+                p = p->next;
+                swap(cur->val, p->val);
+            }
+        }
+        swap(s->val, p->val);
+        return p;
+    }
+};
