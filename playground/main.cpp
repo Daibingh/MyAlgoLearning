@@ -35,7 +35,7 @@ void dfs(const unordered_map<int, vector<int>>& graph,
 }
 
 int main() {
-    freopen("playground/data.in", "r", stdin);
+    freopen("data.in", "r", stdin);
 
     unordered_map<int, vector<int>> graph;
 

@@ -25,12 +25,13 @@ int isLast(Pos p) {
 }
 
 Pos find(int x, List l) {
-    assert(l != NULL);
-    Pos p = l->next;
-    while (p != NULL && p->val != x) {
-        p = p->next;
-    }
-    return p;
+    // assert(l != NULL);
+    // Pos p = l->next;
+    // while (p != NULL && p->val != x) {
+    //     p = p->next;
+    // }
+    // return p;
+    return findPrevious(x, l)->next;
 }
 
 Pos findPrevious(int x, List l) {
