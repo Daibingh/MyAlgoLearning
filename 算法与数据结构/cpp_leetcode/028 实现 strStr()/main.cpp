@@ -7,6 +7,7 @@ using namespace std;
 如果不存在，则返回  -1。
 */
 
+// KMP 算法
 class Solution {
 public:
     int strStr(string s, string p) {
