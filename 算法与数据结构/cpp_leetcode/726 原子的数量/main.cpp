@@ -120,3 +120,59 @@ public:
         return res;
     }
 };
+
+
+// 二刷 2021年7月5日16:14:32
+class Solution {
+public:
+    string countOfAtoms(string formula) {
+        map<string, int> cnt;
+        vector<pair<string, int>> stk;
+        int i=0;
+        while (i<formula.size()) {
+            if (formula[i]=='(') {
+                stk.push_back({"(", 0});
+                ++i;
+            }
+            else if (formula[i]==')') {
+                int k = 0;
+                ++i;
+                while (isdigit(formula[i])) {
+                    k = 10 * k + formula[i]-'0';
+                    ++i;
+                }
+                int p = stk.size()-1;
+                k = max(1, k);
+                while (stk[p].first != "(") {
+                    stk[p].second *= k;
+                    --p;
+                }
+                stk[p].first = "";
+            }
+            else {
+                int j = i;
+                ++j;
+                while ( j< formula.size() && islower(formula[j])) ++j;
+                string name = formula.substr(i, j-i);
+                int k = 0;
+                i = j;
+                while (i<formula.size() && isdigit(formula[i])) {
+                    k = 10 * k + formula[i]-'0';
+                    ++i;
+                }
+                k = max(1, k);
+                stk.push_back({name, k});
+            }  
+        }
+        for (int i=0;i<stk.size();++i) {
+            if (stk[i].first != "" && stk[i].first != "(" )
+                cnt[stk[i].first] += stk[i].second;
+        }
+        string res;
+        for (const auto & t : cnt) {
+            res += t.first;
+            if (t.second>1) res += to_string(t.second);
+        }
+        return res;
+    }
+};

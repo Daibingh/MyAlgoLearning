@@ -1,130 +1,77 @@
 
 // freopen("playground/data.in", "r", stdin);
 
-#include <stdio.h>
-#include <string.h>
 #include <ctype.h>
+#include <math.h>
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include "../uthash.h"
 
-#define BUF_SIZE 1024
-#define ARRAY_SIZE 147456
-#define MAX_LINE 16384
-
-
-struct HashItem {
-    int key;
-    int val;
-};
+/*
+ * scanf 自动跳过空白字符；先 scanf 再 fgets(按行读函数)
+ * 可能会读到空白，尽量统一使用其中一种
+ */
 
 
-struct ListNode {
-    int node;
-    struct ListNode *next;
-};
+#define MAX_SIZE 10000
 
+static int g_numStack[MAX_SIZE];
+static char g_opStack[MAX_SIZE];
+static size_t g_numCnt = 0;
+static size_t g_opCnt = 0;
 
-int inputArray[ARRAY_SIZE];
-int arraySize = 0;
-int offset[MAX_LINE];
-int offsetSize = 0;
-struct HashItem nodeIdMap[MAX_LINE];
+static unsigned char g_opOrder[128];
 
-
-void printArray(int *arr, int len) {
-    for (int i=0; i<len; ++i) {
-        printf("%d ", arr[i]);
-    }
-    printf("\n");
-    printf("size: %d\n", len);
-}
-
-
-void addHash(int key, int val) {
-    int pos = key % MAX_LINE;
-    while (nodeIdMap[pos].key != -1 && nodeIdMap[pos].key != key) {
-        pos = ( pos + 1) % MAX_LINE;
-    }
-    if (nodeIdMap[pos].key == -1) {
-        nodeIdMap[pos].key = key;
-        nodeIdMap[pos].val = val; 
+void Calc()
+{
+    char op = g_opStack[--g_opCnt];
+    int b = g_numStack[--g_numCnt];
+    int a = g_numStack[--g_numCnt];
+    if (op == '+') {
+        g_numStack[g_numCnt++] = a + b;
+    } else if (op == '-') {
+        g_numStack[g_numCnt++] = a - b;
+    } else if (op == '*') {
+        g_numStack[g_numCnt++] = a * b;
+    } else if (op == '/') {
+        g_numStack[g_numCnt++] = a / b;
     }
 }
 
-
-int getHash(int key) {
-    int pos = key % MAX_LINE;
-    while (nodeIdMap[pos].key != -1 && nodeIdMap[pos].key != key) {
-        pos = ( pos + 1) % MAX_LINE;
-    }
-    return nodeIdMap[pos].val;
-}
-
-void removeHash(int key) {
-    int pos = key % MAX_LINE;
-    while (nodeIdMap[pos].key != -1 && nodeIdMap[pos].key != key) {
-        pos = ( pos + 1) % MAX_LINE;
-    }
-    nodeIdMap[pos].val = -100;
-}
-
-
-void buildHashMap() {
-    for (int i=0;i<offsetSize;++i) {
-        addHash(inputArray[offset[i]], i);
-    }
-}
-
-int parseInput() {
-    char buf[BUF_SIZE];
-    while (fgets(buf, BUF_SIZE, stdin)) {
-        // printf("%s", buf);
-        char *num = NULL;
-        offset[++offsetSize] = offset[offsetSize];
-        for (num = strtok(buf, " "); num != NULL; num = strtok(NULL, " ")) {
-            if (isdigit(*num)) {
-                inputArray[arraySize++] = atoi(num); 
-                offset[offsetSize]++;
+int calculate(char * s){
+    size_t len = strlen(s);
+    int i = 0;
+    while ( i < len ) {
+        if (s[i] == ' ') {
+            ++i;
+            continue;
+        }
+        if (isdigit(s[i])) {
+            int n = s[i] - '0';
+            while (isdigit(s[++i])) {
+                n = 10 * n + s[i] - '0';
             }
+            g_numStack[g_numCnt++] = n;
+        } else {
+            while (g_opCnt != 0 && g_opOrder[g_opStack[g_opCnt-1]] >= g_opOrder[s[i]] ) {
+                Calc();
+            }
+            g_opStack[g_opCnt++] = s[i];
+            ++i;
         }
     }
+    while (g_opCnt > 0) {
+        Calc();
+    }
+    return g_numStack[0];
 }
 
-void dfs(int startId) {
-    int val = getHash(startId);
-    if (val == -100) return;
-    printf("%d\n", startId);
-    removeHash(startId);
-    if (val==-1) return;
-    for (int i=offset[val]+1; i<offset[val+1]; ++i) {
-        dfs(inputArray[i]);
-    }
-}
-
-
-int main(int argc, char **argv) {
-    
-    if (argc < 3) {
-        puts("usage: <this_exe> <input_file> <output_file>");
-        return -1;
-    }
-
-    freopen(argv[1], "r", stdin);
-    freopen(argv[2], "w", stdout);
-
-    memset(nodeIdMap, -1, MAX_LINE * sizeof(struct HashItem));
-
-    parseInput();
-
-    // printArray(offset, offsetSize+1);
-    // printArray(inputArray, arraySize);
-
-    buildHashMap();
-
-    // for (int i=0;i<10;++i) {
-    //     printf("%d, %d\n", nodeIdMap[i].key, nodeIdMap[i].val);
-    // }
-
-    dfs(0);
-
-    return 0;
+int main(void)
+{
+    g_opOrder['+'] = 1;
+    g_opOrder['-'] = 1;
+    g_opOrder['*'] = 2;
+    g_opOrder['/'] = 2;
+    printf("%d\n", calculate("2*5/2"));
 }

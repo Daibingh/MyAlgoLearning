@@ -63,3 +63,15 @@ public:
 
 //   2,2    (3)
 //     r,l  (左/右)
+
+
+// use C++ STL lower_bound and upper_bound
+class Solution {
+public:
+    vector<int> searchRange(vector<int>& a, int t) {
+        auto it1 = lower_bound(a.begin(), a.end(), t);
+        auto it2 = upper_bound(a.begin(), a.end(), t);
+        if (it1==it2) return {-1,-1};
+        return { static_cast<int>(distance(a.begin(), it1)), static_cast<int>(distance(a.begin(), it2-1)) };
+    }
+};

@@ -4,10 +4,11 @@ using namespace std;
 
 
 // 0-1背包问题: 每种物品只有一个
+// 恰好装满与不要求装满的**初始化不同**
 int solve_01(vector<int>& weights, vector<int>& values, int capacity) {  
     int N = weights.size();
     int V = capacity;
-    vector<vector<int>> dp(N+1, vector<int>(V+1, 0));
+    vector<vector<int>> dp(N+1, vector<int>(V+1, 0));  // 全初始化为零，不要求装满
     for (int i=1;i<=N;++i) {  // 外层循环遍历物品
         for (int j=1;j<=V;++j) {
             dp[i][j] = max( dp[i-1][j], j-weights[i-1]>=0 ? values[i-1]+dp[i-1][j-weights[i-1]] : 0 );  // 注意 dp 表索引与数组索引的对应关系
@@ -42,7 +43,7 @@ int solve_comp(vector<int>& weights, vector<int>& values, int capacity) {
                 dp[i] = max( dp[i], dp[i-weights[j]]+values[j] );
         }
     }
-    return dp.back();
+    return dp.back(); 
 }
 
 /////////////////////////////////////////////////////////////////////////////////
