@@ -8,15 +8,35 @@
 #include <string.h>
 #include "../uthash.h"
 
-/*
- * scanf 自动跳过空白字符；先 scanf 再 fgets(按行读函数)
- * 可能会读到空白，尽量统一使用其中一种
- */
 
+#define N 5000
+#define L 13
+static char g_res[N][L];
+static int g_cnt = 0;
+static int g_len = 0;
 
-int main(void)
-{
-    int a  = 1;
-    int b = 2;
-    int c = a + b;
+void solve(char *s, int pos) {
+    for (int i=pos;i<g_len;++i) {
+        if (isdigit(s[i])) {
+            continue;
+        }
+        strcpy(g_res[g_cnt++], s);
+        char c = s[i];
+        if (isupper(s[i])) {
+            s[i] = tolower(s[i]);
+        } else {
+            s[i] = toupper(s[i]);
+        }
+        strcpy(g_res[g_cnt++], s);
+        solve(s, pos+1);
+        s[i] = c;
+    }
+}
+
+char ** letterCasePermutation(char * s, int* returnSize) {
+    g_len = strlen(s);
+    g_cnt = 0;
+    solve(s, 0);
+    *returnSize = g_cnt;
+    return g_res;
 }
